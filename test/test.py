@@ -5,6 +5,9 @@ from pkg_resources import resource_filename
 NO_TAGS = resource_filename('test.test', 'no_tags.sam')
 TAGS_A = resource_filename('test.test', 'tags_a.sam')
 TAGS_B = resource_filename('test.test', 'tags_b.sam')
+MULTI_TAGS_A = resource_filename('test.test', 'two_tags_a.sam')
+MULTI_TAGS_B = resource_filename('test.test', 'two_tags_b.sam')
+
 
 
 class Simple(unittest.TestCase):
@@ -44,3 +47,19 @@ class Tags(unittest.TestCase):
         """
         comparisons = compare(TAGS_A, TAGS_B, ignore_tags=True)
         self.assertEqual(len(comparisons), 0)
+
+
+class TagOrder(unittest.TestCase):
+    def test_sort(self):
+        """
+        Should pass if one SAM has tags that are in a different order to other, but sort tags is true
+        """
+        comparisons = compare(MULTI_TAGS_A, MULTI_TAGS_B, sort_tags=True)
+        self.assertEqual(len(comparisons), 0)
+
+    def test_unsort(self):
+        """
+        Should fail if one SAM has tags that are in a different order to other
+        """
+        comparisons = compare(MULTI_TAGS_A, MULTI_TAGS_B)
+        self.assertNotEqual(len(comparisons), 0)
