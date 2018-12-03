@@ -5,6 +5,7 @@ import pathlib
 from dataclasses import dataclass
 import typing
 import os
+import sys
 from deepdiff import DeepDiff
 
 
@@ -100,14 +101,26 @@ def compare(
 
 def main():
     args = get_parser().parse_args()
-    for comparison in compare(
+
+    # Compare all segments
+    comparisons = compare(
             args.bam_a,
             args.bam_b,
             sort_tags=args.sort_tags,
             ignore_tags=args.ignore_tags,
             reference=args.reference
-    ):
+    )
+
+    # Print the differences to stdout
+    for comparison in comparisons:
         print('{} differs from {}. Difference: {}'.format(comparison.left_id, comparison.right_id, comparison.diff))
+
+    # Exit with a nonzero exit code if we had any differences
+    if len(comparisons) > 0:
+       sys.exit(1)
+    else:
+        print('Alignment files were identical.')
+        sys.exit(0)
 
 
 if __name__ == '__main__':
