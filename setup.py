@@ -6,7 +6,8 @@ setup(
     packages=['bam_cmp'],
     version='0.0.1',
     install_requires=[
-        'pysam'
+        'pysam',
+        'deepdiff'
     ],
     entry_points={
         'console_scripts': [
